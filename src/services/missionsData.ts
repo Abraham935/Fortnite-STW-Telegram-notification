@@ -87,17 +87,31 @@ export async function getVBucksMissions(): Promise<VBucksMission[]> {
   }
 
   for (const alertMissions of data.missionAlerts) {
-    if (alertMissions.theaterId !== "D9A801C5444D1C74D1B7DAB5C7C12C5B")
+    if (alertMissions.theaterId === "FF97186D4741CB5F2A980BB0164081D4")
       continue;
     for (const mission of alertMissions.availableMissionAlerts) {
       const difficultyInfo = missionDifficulty.get(
         alertMissions.theaterId + "-" + mission.tileIndex,
       );
-      console.log(difficultyInfo);
+
+      console.log(JSON.stringify(mission, null, 2));
+
+      for (const reward of mission.missionAlertRewards.items) {
+        if (
+          reward.itemType === VBUCKS_ITEM_TYPE ||
+          reward.itemType === "AccountResource:heroxp"
+        ) {
+          vbucksMissions.push({
+            id: mission.missionAlertGuid,
+            theaterName: THEATER_MAP[alertMissions.theaterId] || "Unknown",
+            vbucksAmount: reward.quantity,
+            powerLevel: difficultyInfo || 0,
+            availableUntil: mission.availableUntil,
+          });
+        }
+      }
     }
   }
-
-  console.log(`Missions found with Vbucks ${vbucksMissions.length}`);
 
   return vbucksMissions;
 }
