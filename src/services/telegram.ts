@@ -1,12 +1,11 @@
 import fetch from "node-fetch";
 import { getConfig } from "../utils/config";
-import { text } from "node:stream/consumers";
 import { VBucksMission } from "./missionsData";
 
 const API = "https://api.telegram.org";
 const { botToken, chatId } = getConfig().telegram;
 
-async function sendMessage(chatId: string, message: string) {
+export async function sendMessage(chatId: string, message: string) {
   const url = `${API}/bot${botToken}/sendMessage`;
 
   const response = await fetch(url, {
