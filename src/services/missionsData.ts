@@ -45,8 +45,6 @@ export interface VBucksMission {
 
 export async function getVBucksMissions(): Promise<VBucksMission[]> {
   const token = await getAccessToken();
-
-  console.log("Consulting world info");
   const response = await fetch(WORLD_INFO_URL, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -93,8 +91,6 @@ export async function getVBucksMissions(): Promise<VBucksMission[]> {
       const difficultyInfo = missionDifficulty.get(
         alertMissions.theaterId + "-" + mission.tileIndex,
       );
-
-      console.log(JSON.stringify(mission, null, 2));
 
       for (const reward of mission.missionAlertRewards.items) {
         if (

@@ -1,15 +1,13 @@
 import fetch from "node-fetch";
 import { getConfig } from "../utils/config";
 import { text } from "node:stream/consumers";
+import { VBucksMission } from "./missionsData";
 
 const API = "https://api.telegram.org";
+const { botToken, chatId } = getConfig().telegram;
 
 async function sendMessage(chatId: string, message: string) {
-  const { botToken } = getConfig().telegram;
-
-  // Define URL
   const url = `${API}/bot${botToken}/sendMessage`;
-  console.log(message);
 
   const response = await fetch(url, {
     method: "POST",
@@ -27,7 +25,18 @@ async function sendMessage(chatId: string, message: string) {
 }
 
 export async function sendTestMessage() {
-  const { chatId } = getConfig().telegram;
-
   sendMessage(chatId, "Hola esta es una alerta de vbucks");
+}
+
+export async function sendDataMission(data: VBucksMission[]) {
+  if (data.length === 0) {
+    sendMessage(chatId, "No hay misiones de V-Bucks hoy");
+    return;
+  }
+
+  let message = "Misiones de V-Bucks hoy:\n";
+  data.forEach((mission) => {
+    message += `- ${mission.theaterName}: ${mission.vbucksAmount} V-Bucks\n`;
+  });
+  sendMessage(chatId, message);
 }
